@@ -179,17 +179,18 @@
     <Compile Include="$(PathToMsalSources)\Platforms\net6\**\*.cs" LinkBase="Platforms\net6" />
     <Compile Include="$(PathToMsalSources)\Platforms\Features\DefaultOSBrowser\**\*.cs" />
     <Compile Include="$(PathToMsalSources)\Platforms\Features\DesktopOS\**\*.cs" />
-    
+
     <!--System.Text.Json replaces internal NewtonSoft for NET 6-->
     <Compile Remove="$(PathToMsalSources)\json\**\*.*" />
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == '$(TargetFrameworkNet6)'">
+  <PropertyGroup Condition="'$(TargetFramework)' == '$(TargetFrameworkNet6)' Or '$(TargetFramework)' == '$(TargetFrameworkNet6Android)' Or 
+                 '$(TargetFramework)' == '$(TargetFrameworkNet6Ios)' Or '$(TargetFramework)' == '$(TargetFrameworkNet6Mac)'">
     <IsTrimmable>true</IsTrimmable>
     <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == '$(TargetFrameworkNet5Win)' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == '$(TargetFrameworkNet5Win)'">
     <Compile Include="$(PathToMsalSources)\Platforms\netcore\**\*.cs" LinkBase="Platforms\netcore" />
     <Compile Include="$(PathToMsalSources)\Platforms\net5win\**\*.cs" LinkBase="Platforms\net5win" />
     <Compile Include="$(PathToMsalSources)\Platforms\Features\DefaultOSBrowser\**\*.cs" />
@@ -313,17 +314,21 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == '$(TargetFrameworkNet6Android)' And '$(MAUI_SUPPORT)' != ''">
+  <ItemGroup Condition="'$(TargetFramework)' == '$(TargetFrameworkNet6Android)'">
     <Compile Include="$(PathToMsalSources)\Platforms\Android\**\*.cs" />
     <Compile Include="$(PathToMsalSources)\PlatformsCommon\PlatformNotSupported\ApiConfig\SystemWebViewOptions.cs" />
+    <Compile Include="$(PathToMsalSources)\Platforms\net6\**\*.cs" LinkBase="Platforms\net6" />
     <PackageReference Include="System.Security.SecureString" Version="4.3.0" />
     <PackageReference Include="Xamarin.AndroidX.Browser" Version="1.4.0" PrivateAssets="All" />
+    <Compile Remove="$(PathToMsalSources)\json\**\*.*" />
   </ItemGroup>
-  <ItemGroup Condition=" ('$(TargetFramework)' == '$(TargetFrameworkNet6Ios)' Or '$(TargetFramework)' == '$(TargetFrameworkNet6Mac)') And '$(MAUI_SUPPORT)' != ''">
+  <ItemGroup Condition="'$(TargetFramework)' == '$(TargetFrameworkNet6Ios)' Or '$(TargetFramework)' == '$(TargetFrameworkNet6Mac)'">
     <Compile Include="$(PathToMsalSources)\Platforms\iOS\**\*.cs" />
     <Compile Include="$(PathToMsalSources)\Platforms\Features\Apple\**\*.cs" />
     <Compile Include="$(PathToMsalSources)\PlatformsCommon\PlatformNotSupported\ApiConfig\SystemWebViewOptions.cs" />
+    <Compile Include="$(PathToMsalSources)\Platforms\net6\**\*.cs" LinkBase="Platforms\net6" />
     <PackageReference Include="System.Security.SecureString" Version="4.3.0" />
+    <Compile Remove="$(PathToMsalSources)\json\**\*.*" />
   </ItemGroup>
 
   <ItemGroup>
