@@ -3,27 +3,22 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
+using Android.Accounts;
 using Android.App;
 using Android.Content;
-using AndroidNative = Android;
+using Android.OS;
+using Java.Util.Concurrent;
+using Microsoft.Identity.Client.ApiConfig.Parameters;
+using Microsoft.Identity.Client.Cache;
 using Microsoft.Identity.Client.Core;
+using Microsoft.Identity.Client.Instance.Discovery;
 using Microsoft.Identity.Client.Internal.Broker;
+using Microsoft.Identity.Client.Internal.Requests;
 using Microsoft.Identity.Client.OAuth2;
 using Microsoft.Identity.Client.UI;
-using Microsoft.Identity.Json.Linq;
-using Microsoft.Identity.Client.Internal.Requests;
-using Microsoft.Identity.Client.ApiConfig.Parameters;
-using Microsoft.Identity.Client.Http;
-using System.Net;
-using Android.OS;
-using System.Linq;
-using Android.Accounts;
-using Java.Util.Concurrent;
 using Microsoft.Identity.Client.Utils;
-using Microsoft.Identity.Client.Cache;
-using Microsoft.Identity.Client.Instance.Discovery;
+using AndroidNative = Android;
 
 namespace Microsoft.Identity.Client.Platforms.Android.Broker
 {
@@ -350,11 +345,11 @@ namespace Microsoft.Identity.Client.Platforms.Android.Broker
                             return;
                         }
 
-                        dynamic errorResult = JObject.Parse(helloRequestResult.GetString(BrokerConstants.BrokerResultV2));
-                        string errorCode = null;
-                        string errorDescription = null;
+                        var errorResult = JsonHelper.ParseIntoJsonObject(helloRequestResult.GetString(BrokerConstants.BrokerResultV2));
+                        string errorCode;
+                        string errorDescription;
 
-                        if (!string.IsNullOrEmpty(errorResult))
+                        if (errorResult != null)
                         {
                             errorCode = errorResult[BrokerResponseConst.BrokerErrorCode]?.ToString();
                             string errorMessage = errorResult[BrokerResponseConst.BrokerErrorMessage]?.ToString();

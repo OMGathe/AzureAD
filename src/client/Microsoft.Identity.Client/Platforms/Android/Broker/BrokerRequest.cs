@@ -9,7 +9,13 @@ using Microsoft.Identity.Client.ApiConfig.Parameters;
 using Microsoft.Identity.Client.Internal;
 using Microsoft.Identity.Client.Internal.Requests;
 using Microsoft.Identity.Client.Utils;
+#if SUPPORTS_SYSTEM_TEXT_JSON
+using Microsoft.Identity.Client.Platforms.net6;
+using System.Text.Json.Serialization;
+using JsonProperty = System.Text.Json.Serialization.JsonPropertyNameAttribute;
+#else
 using Microsoft.Identity.Json;
+#endif
 
 namespace Microsoft.Identity.Client.Platforms.Android.Broker
 {
@@ -87,9 +93,7 @@ namespace Microsoft.Identity.Client.Platforms.Android.Broker
         {
             BrokerRequest br = FromAuthenticationParameters(authenticationRequestParameters);
 
-#pragma warning disable CA1305 // Specify IFormatProvider
             br.ForceRefresh = acquireTokenSilentParameters.ForceRefresh.ToString();
-#pragma warning restore CA1305 // Specify IFormatProvider
 
             br.UserName = !string.IsNullOrEmpty(acquireTokenSilentParameters.Account?.Username) ?
                 acquireTokenSilentParameters.Account?.Username :
@@ -108,7 +112,7 @@ namespace Microsoft.Identity.Client.Platforms.Android.Broker
             br.Scopes = EnumerableExtensions.AsSingleString(authenticationRequestParameters.Scope);
             br.ClientId = authenticationRequestParameters.AppConfig.ClientId;
             br.CorrelationId = authenticationRequestParameters.RequestContext.CorrelationId.ToString();
-            
+
             br.ClientAppVersion = Application.Context.PackageManager.GetPackageInfo(
                 Application.Context.PackageName,
                 PackageInfoFlags.MatchAll).VersionName;

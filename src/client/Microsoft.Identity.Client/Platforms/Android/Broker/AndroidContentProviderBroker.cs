@@ -17,7 +17,6 @@ using Microsoft.Identity.Client.Internal.Requests;
 using Microsoft.Identity.Client.OAuth2;
 using Microsoft.Identity.Client.UI;
 using Microsoft.Identity.Client.Utils;
-using Microsoft.Identity.Json.Linq;
 using AndroidNative = Android;
 using AndroidUri = Android.Net.Uri;
 
@@ -77,11 +76,11 @@ namespace Microsoft.Identity.Client.Platforms.Android.Broker
                 return negotiatedBrokerProtocalKey;
             }
 
-            dynamic errorResult = JObject.Parse(bundleResult?.GetString(BrokerConstants.BrokerResultV2));
+            var errorResult = JsonHelper.ParseIntoJsonObject(bundleResult?.GetString(BrokerConstants.BrokerResultV2));
             string errorCode = null;
             string errorDescription = null;
 
-            if (!string.IsNullOrEmpty(errorResult))
+            if (!string.IsNullOrEmpty(JsonHelper.JsonObjectToString(errorResult)))
             {
                 errorCode = errorResult[BrokerResponseConst.BrokerErrorCode]?.ToString();
                 string errorMessage = errorResult[BrokerResponseConst.BrokerErrorMessage]?.ToString();
@@ -223,7 +222,7 @@ namespace Microsoft.Identity.Client.Platforms.Android.Broker
             Bundle silentOperationBundle = _brokerHelper.CreateSilentBrokerBundle(brokerRequest);
             var serializedOperationBundle = SerializeBundle(silentOperationBundle);
             var silentOperationBundleResult = await PerformContentResolverOperationAsync(ContentResolverOperation.acquireTokenSilent, serializedOperationBundle).ConfigureAwait(false);
-            
+
             if (silentOperationBundleResult != null)
             {
                 return _brokerHelper.GetSilentResultFromBundle(silentOperationBundleResult);
